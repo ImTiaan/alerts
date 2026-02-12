@@ -252,6 +252,13 @@ export default function Dashboard() {
                       className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
                     />
                     <button 
+                      onClick={() => {navigator.clipboard.writeText(twitchToken); alert("Copied token!");}}
+                      className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm font-medium transition-colors"
+                      title="Copy Token"
+                    >
+                      Copy
+                    </button>
+                    <button 
                       onClick={handleTwitchLogin}
                       className="whitespace-nowrap px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm font-medium transition-colors"
                       title="Connect with Twitch to get token"
@@ -266,13 +273,22 @@ export default function Dashboard() {
                     onChange={(e) => setTwitchClientId(e.target.value)}
                     className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
                   />
-                   <input
-                    type="text"
-                    placeholder="Broadcaster ID"
-                    value={twitchBroadcasterId}
-                    onChange={(e) => setTwitchBroadcasterId(e.target.value)}
-                    className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
-                  />
+                   <div className="flex gap-2">
+                     <input
+                      type="text"
+                      placeholder="Broadcaster ID"
+                      value={twitchBroadcasterId}
+                      onChange={(e) => setTwitchBroadcasterId(e.target.value)}
+                      className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
+                    />
+                    <button 
+                      onClick={() => {navigator.clipboard.writeText(twitchBroadcasterId); alert("Copied ID!");}}
+                      className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm font-medium transition-colors"
+                      title="Copy ID"
+                    >
+                      Copy
+                    </button>
+                   </div>
                 </div>
               </div>
 
