@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: 'Block Script';
-  src: url('/fonts/BlockScript.ttf') format('truetype');
+  src: url('/fonts/BlockScript.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
