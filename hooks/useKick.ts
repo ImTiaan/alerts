@@ -14,6 +14,7 @@ interface UseKickProps {
 
 export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickProps) {
   const [channelId, setChannelId] = useState<string | null>(null);
+  const [chatroomId, setChatroomId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -21,19 +22,25 @@ export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickPr
     // If ID is provided directly, use it
     if (kickChannelId) {
       setChannelId(kickChannelId);
-      return;
+      // We can't easily guess chatroomId from channelId without an API call, 
+      // but if the user provided it via props/env, we could use it. 
+      // For now, let's try to fetch it if we have a username, or fallback.
     }
 
-    // Otherwise fetch from API (fallback)
+    // Always try to fetch to get the chatroom ID if we have a username
     if (username) {
       fetch(`/api/kick?username=${username}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.id) {
-            console.log(`[Kick] Found ID: ${data.id} for user ${username}`);
+            console.log(`[Kick] Found Channel ID: ${data.id}`);
             setChannelId(data.id.toString());
+          }
+          if (data.chatroom && data.chatroom.id) {
+            console.log(`[Kick] Found Chatroom ID: ${data.chatroom.id}`);
+            setChatroomId(data.chatroom.id.toString());
           } else {
-            console.error("[Kick] ID not found in response", data);
+            console.warn("[Kick] Chatroom ID not found in response", data);
           }
         })
         .catch((err) => console.error("[Kick] Failed to fetch Kick ID", err));
@@ -41,7 +48,7 @@ export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickPr
   }, [username, kickChannelId, enabled]);
 
   useEffect(() => {
-    if (!channelId || !enabled) return;
+    if ((!channelId && !chatroomId) || !enabled) return;
 
     // Enable Pusher logging
     Pusher.logToConsole = true;
@@ -59,41 +66,68 @@ export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickPr
       console.error("[Kick] Pusher Connection Error:", err);
     });
 
-    const channelName = `channel.${channelId}`;
-    const channel = pusher.subscribe(channelName);
+    const channels: any[] = [];
 
-    console.log(`[Kick] Subscribing to ${channelName}...`);
+    // Subscribe to Channel ID (for stream events?)
+    if (channelId) {
+      const channelName = `channel.${channelId}`;
+      console.log(`[Kick] Subscribing to ${channelName}...`);
+      const channel = pusher.subscribe(channelName);
+      channels.push({ name: channelName, channel });
+    }
 
-    channel.bind("pusher:subscription_succeeded", () => {
-      console.log(`[Kick] Successfully subscribed to ${channelName}`);
-    });
+    // Subscribe to Chatroom ID (for chat/follow events?)
+    if (chatroomId) {
+      // Try both v2 and v1 channel names to be safe
+      const chatroomNameV2 = `chatrooms.${chatroomId}.v2`; 
+      const chatroomNameV1 = `chatrooms.${chatroomId}`;
+      
+      console.log(`[Kick] Subscribing to ${chatroomNameV2} and ${chatroomNameV1}...`);
+      
+      const chatroomV2 = pusher.subscribe(chatroomNameV2);
+      channels.push({ name: chatroomNameV2, channel: chatroomV2 });
 
-    channel.bind("pusher:subscription_error", (err: any) => {
-      console.error(`[Kick] Failed to subscribe to ${channelName}:`, err);
-    });
+      const chatroomV1 = pusher.subscribe(chatroomNameV1);
+      channels.push({ name: chatroomNameV1, channel: chatroomV1 });
+    }
 
-    // Listen for ALL events to debug
-    channel.bind_global((eventName: string, data: any) => {
-      console.log(`[Kick] Global Event Received: ${eventName}`, data);
-    });
+    channels.forEach(({ name, channel }) => {
+        channel.bind("pusher:subscription_succeeded", () => {
+        console.log(`[Kick] Successfully subscribed to ${name}`);
+        });
 
-    channel.bind("App\\Events\\FollowersUpdated", (data: any) => {
-      console.log("[Kick] Follower Event:", data);
-      onAlert({
-        id: Date.now().toString(),
-        type: "follow",
-        username: "New Follower",
-        message: data.followers_count ? `Total: ${data.followers_count}` : undefined,
-      });
-    });
+        channel.bind("pusher:subscription_error", (err: any) => {
+        console.error(`[Kick] Failed to subscribe to ${name}:`, err);
+        });
 
-    channel.bind("App\\Events\\StreamerIsLive", (data: any) => {
-         console.log("[Kick] Stream Live:", data);
+        // Listen for ALL events to debug
+        channel.bind_global((eventName: string, data: any) => {
+        console.log(`[Kick] Global Event Received on ${name}: ${eventName}`, data);
+        });
+
+        // Handle FollowersUpdated
+        // Note: Event name might be "App\Events\FollowersUpdated" or "followers.updated" depending on the channel
+        channel.bind("App\\Events\\FollowersUpdated", (data: any) => {
+        console.log(`[Kick] Follower Event on ${name}:`, data);
+        onAlert({
+            id: Date.now().toString(),
+            type: "follow",
+            username: data.username || "New Follower", // Adjust based on actual payload
+            message: data.followers_count ? `Total: ${data.followers_count}` : undefined,
+        });
+        });
+        
+        // Handle StreamerIsLive
+        channel.bind("App\\Events\\StreamerIsLive", (data: any) => {
+            console.log(`[Kick] Stream Live on ${name}:`, data);
+        });
     });
 
     return () => {
-      pusher.unsubscribe(channelName);
+      channels.forEach(({ name }) => {
+          pusher.unsubscribe(name);
+      });
       pusher.disconnect();
     };
-  }, [channelId, enabled, onAlert]);
+  }, [channelId, chatroomId, enabled, onAlert]);
 }
