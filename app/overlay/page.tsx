@@ -1,0 +1,68 @@
+"use client";
+
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import AlertDisplay from "@/components/AlertDisplay";
+import { Alert } from "@/lib/types";
+import { useKick } from "@/hooks/useKick";
+import { useTwitch } from "@/hooks/useTwitch";
+
+function OverlayContent() {
+  const searchParams = useSearchParams();
+  const [queue, setQueue] = useState<Alert[]>([]);
+
+  const kickUsername = searchParams.get("kick");
+  const twitchToken = searchParams.get("twitch_token");
+  const twitchClientId = searchParams.get("twitch_client_id");
+  const twitchBroadcasterId = searchParams.get("twitch_broadcaster_id");
+
+  // Function to add alert to queue
+  const addAlert = useCallback((alert: Alert) => {
+    setQueue((prev) => [...prev, alert]);
+  }, []);
+
+  const handleAlertComplete = useCallback((id: string) => {
+    setQueue((prev) => prev.filter((a) => a.id !== id));
+  }, []);
+
+  // Integrations
+  useKick({
+    username: kickUsername,
+    enabled: !!kickUsername,
+    onAlert: addAlert,
+  });
+
+  useTwitch({
+    accessToken: twitchToken || "",
+    clientId: twitchClientId || "",
+    broadcasterId: twitchBroadcasterId || "",
+    enabled: !!(twitchToken && twitchClientId && twitchBroadcasterId),
+    onAlert: addAlert,
+  });
+
+  // Listen for BroadcastChannel events (for testing/local control)
+  useEffect(() => {
+    const channel = new BroadcastChannel("stream-alerts");
+    channel.onmessage = (event) => {
+      if (event.data && event.data.type === "TRIGGER_ALERT") {
+        addAlert(event.data.alert);
+      }
+    };
+    return () => channel.close();
+  }, [addAlert]);
+
+  return (
+    <main className="min-h-screen bg-transparent overflow-hidden">
+      {/* Background is transparent for OBS */}
+      <AlertDisplay queue={queue} onAlertComplete={handleAlertComplete} />
+    </main>
+  );
+}
+
+export default function OverlayPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OverlayContent />
+    </Suspense>
+  );
+}
