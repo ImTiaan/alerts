@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Alert, AlertType } from "@/lib/types";
 
 export default function Dashboard() {
@@ -15,8 +15,36 @@ export default function Dashboard() {
   const [twitchBroadcasterId, setTwitchBroadcasterId] = useState("");
   const [generatedUrl, setGeneratedUrl] = useState("");
 
+  // Load saved credentials on mount or use Environment Variables
+  useEffect(() => {
+    // Priority: Local Storage > Environment Variables > Empty
+    const saved = localStorage.getItem("alert_settings");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setKickUser(parsed.kickUser || process.env.NEXT_PUBLIC_KICK_USERNAME || "");
+      setTwitchToken(parsed.twitchToken || process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
+      setTwitchClientId(parsed.twitchClientId || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID || "");
+      setTwitchBroadcasterId(parsed.twitchBroadcasterId || process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID || "");
+    } else {
+      // Fallback to Env Vars if no local storage
+      setKickUser(process.env.NEXT_PUBLIC_KICK_USERNAME || "");
+      setTwitchToken(process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
+      setTwitchClientId(process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID || "");
+      setTwitchBroadcasterId(process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID || "");
+    }
+  }, []);
+
   const generateUrl = () => {
     if (typeof window === "undefined") return;
+    
+    // Save to local storage for next time
+    localStorage.setItem("alert_settings", JSON.stringify({
+      kickUser,
+      twitchToken,
+      twitchClientId,
+      twitchBroadcasterId
+    }));
+
     const url = new URL("/overlay", window.location.origin);
     if (kickUser) url.searchParams.set("kick", kickUser);
     if (twitchToken) url.searchParams.set("twitch_token", twitchToken);

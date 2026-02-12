@@ -11,10 +11,10 @@ function OverlayContent() {
   const searchParams = useSearchParams();
   const [queue, setQueue] = useState<Alert[]>([]);
 
-  const kickUsername = searchParams.get("kick");
-  const twitchToken = searchParams.get("twitch_token");
-  const twitchClientId = searchParams.get("twitch_client_id");
-  const twitchBroadcasterId = searchParams.get("twitch_broadcaster_id");
+  const kickUsername = searchParams.get("kick") || process.env.NEXT_PUBLIC_KICK_USERNAME;
+  const twitchToken = searchParams.get("twitch_token") || process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN;
+  const twitchClientId = searchParams.get("twitch_client_id") || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
+  const twitchBroadcasterId = searchParams.get("twitch_broadcaster_id") || process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID;
 
   // Function to add alert to queue
   const addAlert = useCallback((alert: Alert) => {
