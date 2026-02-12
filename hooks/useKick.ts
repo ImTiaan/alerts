@@ -7,29 +7,38 @@ const KICK_PUSHER_CLUSTER = "us2";
 
 interface UseKickProps {
   username?: string | null;
+  kickChannelId?: string | null;
   enabled: boolean;
   onAlert: (alert: Alert) => void;
 }
 
-export function useKick({ username, enabled, onAlert }: UseKickProps) {
+export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickProps) {
   const [channelId, setChannelId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!username || !enabled) return;
+    if (!enabled) return;
 
-    // Fetch channel ID
-    fetch(`/api/kick?username=${username}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.id) {
-          console.log(`[Kick] Found ID: ${data.id} for user ${username}`);
-          setChannelId(data.id.toString());
-        } else {
+    // If ID is provided directly, use it
+    if (kickChannelId) {
+      setChannelId(kickChannelId);
+      return;
+    }
+
+    // Otherwise fetch from API (fallback)
+    if (username) {
+      fetch(`/api/kick?username=${username}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.id) {
+            console.log(`[Kick] Found ID: ${data.id} for user ${username}`);
+            setChannelId(data.id.toString());
+          } else {
             console.error("[Kick] ID not found in response", data);
-        }
-      })
-      .catch((err) => console.error("[Kick] Failed to fetch Kick ID", err));
-  }, [username, enabled]);
+          }
+        })
+        .catch((err) => console.error("[Kick] Failed to fetch Kick ID", err));
+    }
+  }, [username, kickChannelId, enabled]);
 
   useEffect(() => {
     if (!channelId || !enabled) return;

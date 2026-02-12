@@ -12,6 +12,7 @@ function OverlayContent() {
   const [queue, setQueue] = useState<Alert[]>([]);
 
   const kickUsername = searchParams.get("kick") || process.env.NEXT_PUBLIC_KICK_USERNAME;
+  const kickChannelId = searchParams.get("kick_channel_id") || process.env.NEXT_PUBLIC_KICK_CHANNEL_ID;
   const twitchToken = searchParams.get("twitch_token") || process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN;
   const twitchClientId = searchParams.get("twitch_client_id") || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
   const twitchBroadcasterId = searchParams.get("twitch_broadcaster_id") || process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID;
@@ -28,7 +29,8 @@ function OverlayContent() {
   // Integrations
   useKick({
     username: kickUsername,
-    enabled: !!kickUsername,
+    kickChannelId: kickChannelId,
+    enabled: !!(kickUsername || kickChannelId),
     onAlert: addAlert,
   });
 
