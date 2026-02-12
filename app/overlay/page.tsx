@@ -64,10 +64,34 @@ function OverlayContent() {
     return () => channel.close();
   }, [addAlert]);
 
+  // Debug overlay (only visible if explicitly requested via URL param ?debug=true)
+  const showDebug = searchParams.get("debug") === "true";
+
   return (
-    <main className="min-h-screen bg-transparent overflow-hidden">
+    <main className="min-h-screen bg-transparent overflow-hidden relative">
       {/* Background is transparent for OBS */}
       <AlertDisplay queue={queue} onAlertComplete={handleAlertComplete} />
+      
+      {showDebug && (
+        <div className="absolute bottom-4 left-4 bg-black/80 text-white p-4 rounded text-xs z-50 pointer-events-auto">
+          <h3 className="font-bold mb-2">Debug Info</h3>
+          <p>Kick Username: {kickUsername || "Not set"}</p>
+          <p>Kick Channel ID: {kickChannelId || "Not set"}</p>
+          <p>Twitch: {twitchToken ? "Configured" : "Not configured"}</p>
+          <p>Queue Length: {queue.length}</p>
+          <button 
+            className="mt-2 px-2 py-1 bg-blue-500 rounded hover:bg-blue-600"
+            onClick={() => addAlert({
+              id: Date.now().toString(),
+              type: "follow",
+              username: "Test User",
+              message: "This is a test alert"
+            })}
+          >
+            Test Alert
+          </button>
+        </div>
+      )}
     </main>
   );
 }
