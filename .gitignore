@@ -9,7 +9,7 @@ yarn-error.log*
 # Env files
 .env
 .env.*
-.env.local
+!.env.example
 
 # MacOS
 .DS_Store
