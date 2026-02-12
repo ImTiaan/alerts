@@ -17,22 +17,91 @@ export default function Dashboard() {
 
   // Load saved credentials on mount or use Environment Variables
   useEffect(() => {
+    // Check for Twitch OAuth hash
+    if (typeof window !== "undefined" && window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      const accessToken = params.get("access_token");
+      
+      if (accessToken) {
+        // Clean up URL
+        window.history.replaceState(null, "", window.location.pathname);
+        
+        // We need the Client ID to fetch the User ID. 
+        // It should be in localStorage since we save before redirect.
+        const saved = localStorage.getItem("alert_settings");
+        const parsed = saved ? JSON.parse(saved) : {};
+        const storedClientId = parsed.twitchClientId || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID;
+
+        setTwitchToken(accessToken);
+
+        if (storedClientId) {
+          // Auto-fetch Broadcaster ID
+          fetch("https://api.twitch.tv/helix/users", {
+            headers: {
+              "Authorization": `Bearer ${accessToken}`,
+              "Client-Id": storedClientId
+            }
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.data && data.data[0]) {
+              const userId = data.data[0].id;
+              setTwitchBroadcasterId(userId);
+              
+              // Save everything
+              localStorage.setItem("alert_settings", JSON.stringify({
+                ...parsed,
+                twitchToken: accessToken,
+                twitchBroadcasterId: userId
+              }));
+              console.log("Automatically fetched Broadcaster ID:", userId);
+            }
+          })
+          .catch(err => console.error("Failed to fetch user ID", err));
+        } else {
+           // Save just the token if we somehow don't have client ID
+           localStorage.setItem("alert_settings", JSON.stringify({ ...parsed, twitchToken: accessToken }));
+        }
+      }
+    }
+
     // Priority: Local Storage > Environment Variables > Empty
     const saved = localStorage.getItem("alert_settings");
     if (saved) {
       const parsed = JSON.parse(saved);
       setKickUser(parsed.kickUser || process.env.NEXT_PUBLIC_KICK_USERNAME || "");
-      setTwitchToken(parsed.twitchToken || process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
+      if (!twitchToken) setTwitchToken(parsed.twitchToken || process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
       setTwitchClientId(parsed.twitchClientId || process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID || "");
       setTwitchBroadcasterId(parsed.twitchBroadcasterId || process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID || "");
     } else {
       // Fallback to Env Vars if no local storage
       setKickUser(process.env.NEXT_PUBLIC_KICK_USERNAME || "");
-      setTwitchToken(process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
+      if (!twitchToken) setTwitchToken(process.env.NEXT_PUBLIC_TWITCH_ACCESS_TOKEN || "");
       setTwitchClientId(process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID || "");
       setTwitchBroadcasterId(process.env.NEXT_PUBLIC_TWITCH_BROADCASTER_ID || "");
     }
-  }, []);
+  }, []); // Remove dependencies to run once on mount
+
+  const handleTwitchLogin = () => {
+    if (!twitchClientId) {
+      alert("Please enter a Client ID first");
+      return;
+    }
+    
+    // Save Client ID before redirecting so we can use it on return
+    const saved = localStorage.getItem("alert_settings");
+    const parsed = saved ? JSON.parse(saved) : {};
+    localStorage.setItem("alert_settings", JSON.stringify({ ...parsed, twitchClientId }));
+
+    const redirectUri = `${window.location.origin}/dashboard`;
+    const scope = "moderator:read:followers channel:read:subscriptions";
+    const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${twitchClientId}&redirect_uri=${encodeURIComponent(
+      redirectUri
+    )}&response_type=token&scope=${encodeURIComponent(scope)}`;
+    window.location.href = authUrl;
+  };
+
 
   const generateUrl = () => {
     if (typeof window === "undefined") return;
@@ -162,13 +231,22 @@ export default function Dashboard() {
               <div className="border-t pt-4 dark:border-zinc-700">
                 <h3 className="text-sm font-semibold mb-2">Twitch (Optional)</h3>
                 <div className="space-y-2">
-                  <input
-                    type="text"
-                    placeholder="Access Token (from scopes)"
-                    value={twitchToken}
-                    onChange={(e) => setTwitchToken(e.target.value)}
-                    className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
-                  />
+                   <div className="flex gap-2">
+                    <input
+                      type="password"
+                      placeholder="Access Token (from scopes)"
+                      value={twitchToken}
+                      onChange={(e) => setTwitchToken(e.target.value)}
+                      className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
+                    />
+                    <button 
+                      onClick={handleTwitchLogin}
+                      className="whitespace-nowrap px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm font-medium transition-colors"
+                      title="Connect with Twitch to get token"
+                    >
+                      Connect
+                    </button>
+                  </div>
                   <input
                     type="text"
                     placeholder="Client ID"
