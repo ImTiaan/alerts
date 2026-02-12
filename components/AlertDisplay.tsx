@@ -100,13 +100,19 @@ export default function AlertDisplay({
   onAlertComplete,
 }: AlertDisplayProps) {
   const [currentAlert, setCurrentAlert] = useState<Alert | null>(null);
-  const alertIdRef = useRef<string | null>(null);
+  const processedAlertIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!currentAlert && queue.length > 0) {
       const nextAlert = queue[0];
+      
+      // Prevent processing the same alert ID if it was just handled
+      if (nextAlert.id === processedAlertIdRef.current) {
+        return;
+      }
+
       setCurrentAlert(nextAlert);
-      alertIdRef.current = nextAlert.id;
+      processedAlertIdRef.current = nextAlert.id;
 
       const duration = nextAlert.duration || 3000;
       const timer = setTimeout(() => {
@@ -122,9 +128,9 @@ export default function AlertDisplay({
       <AnimatePresence 
         mode="wait"
         onExitComplete={() => {
-          if (alertIdRef.current) {
-            onAlertComplete(alertIdRef.current);
-            alertIdRef.current = null;
+          if (processedAlertIdRef.current) {
+            onAlertComplete(processedAlertIdRef.current);
+            // Do NOT nullify the ref here, so we remember what we just processed
           }
         }}
       >
