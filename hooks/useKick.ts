@@ -35,7 +35,10 @@ export function useKick({ username, kickChannelId, enabled, onAlert }: UseKickPr
       // Use our internal API to fetch Kick data to avoid CORS
       fetch(`/api/kick?username=${targetUsername}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then((response) => {
+          // Normalize data (handle if API returns { data: ... } wrapper)
+          const data = response.data || response;
+          
           if (data.id) {
             // Only set if not already set or changed
             if (!channelId || channelId !== data.id.toString()) {
