@@ -126,11 +126,8 @@ export default function AlertDisplay({
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.8, opacity: 0, y: 50 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="glass-panel p-12 flex flex-col items-center gap-8 min-w-[500px] shadow-[0_0_50px_rgba(0,255,128,0.1)] relative overflow-hidden"
+            className="flex flex-col items-center gap-4 min-w-[500px] relative"
           >
-            {/* Decorative background glow */}
-            <div className="absolute inset-0 bg-gradient-radial from-emerald-900/40 to-transparent opacity-50 pointer-events-none" />
-            
             <div className="animate-bounce relative z-10">
               <AlertIcon type={currentAlert.type} />
             </div>

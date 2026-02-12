@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Block Script';
+  src: url('/fonts/BlockScript.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Bottle Green Scale */
   --color-bottle-100: #001a00;
@@ -35,7 +43,7 @@ body {
 
 @layer utilities {
   .font-heading {
-    font-family: var(--font-block-script), sans-serif;
+    font-family: 'Block Script', var(--font-block-script), sans-serif;
   }
 
   .glass-panel {
