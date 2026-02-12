@@ -8,4 +8,5 @@ export interface Alert {
   amount?: number;
   currency?: string;
   duration?: number; // duration in ms
+  image?: string;
 }
