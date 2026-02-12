@@ -40,6 +40,17 @@ function OverlayContent() {
     onAlert: addAlert,
   });
 
+  useEffect(() => {
+    // Force body background to be transparent for OBS
+    document.body.style.background = "transparent";
+    // Also remove the gradient if it was applied via class
+    document.body.className = document.body.className.replace("bg-gradient-to-b", "");
+    
+    return () => {
+      document.body.style.background = "";
+    };
+  }, []);
+
   // Listen for BroadcastChannel events (for testing/local control)
   useEffect(() => {
     const channel = new BroadcastChannel("stream-alerts");
