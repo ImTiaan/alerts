@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Alert, AlertType } from "@/lib/types";
 import { Heart, Star, DollarSign, Users } from "lucide-react";
@@ -100,25 +100,34 @@ export default function AlertDisplay({
   onAlertComplete,
 }: AlertDisplayProps) {
   const [currentAlert, setCurrentAlert] = useState<Alert | null>(null);
+  const alertIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!currentAlert && queue.length > 0) {
       const nextAlert = queue[0];
       setCurrentAlert(nextAlert);
+      alertIdRef.current = nextAlert.id;
 
       const duration = nextAlert.duration || 3000;
       const timer = setTimeout(() => {
         setCurrentAlert(null);
-        onAlertComplete(nextAlert.id);
       }, duration);
 
       return () => clearTimeout(timer);
     }
-  }, [currentAlert, queue, onAlertComplete]);
+  }, [currentAlert, queue]);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center pointer-events-none p-12">
-      <AnimatePresence mode="wait">
+      <AnimatePresence 
+        mode="wait"
+        onExitComplete={() => {
+          if (alertIdRef.current) {
+            onAlertComplete(alertIdRef.current);
+            alertIdRef.current = null;
+          }
+        }}
+      >
         {currentAlert && (
           <motion.div
             key={currentAlert.id}
