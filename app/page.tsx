@@ -2,42 +2,45 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Stream Alerts Dashboard
-        </p>
+    <main className="flex min-h-screen flex-col items-center justify-center p-24 relative overflow-hidden">
+      {/* Decorative background elements */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-emerald-900/20 blur-[100px] rounded-full pointer-events-none" />
+
+      <div className="z-10 w-full max-w-5xl items-center justify-center font-mono text-sm flex mb-12">
+        <h1 className="text-6xl font-heading text-center text-glow text-emerald-400 drop-shadow-lg">
+          Stream Alerts
+        </h1>
       </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
+      <div className="grid text-center lg:max-w-5xl lg:w-full lg:grid-cols-2 lg:text-left gap-6">
         <Link
           href="/overlay"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="group glass-panel px-8 py-8 transition-all hover:bg-white/10 hover:scale-[1.02] hover:border-emerald-500/50"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
+          <h2 className={`mb-3 text-3xl font-heading text-emerald-300 group-hover:text-emerald-200 transition-colors`}>
             Overlay{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+          <p className={`m-0 max-w-[30ch] text-sm text-emerald-100/70 group-hover:text-emerald-50`}>
             Open the overlay window (for OBS).
           </p>
         </Link>
 
         <Link
           href="/dashboard"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="group glass-panel px-8 py-8 transition-all hover:bg-white/10 hover:scale-[1.02] hover:border-emerald-500/50"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
+          <h2 className={`mb-3 text-3xl font-heading text-emerald-300 group-hover:text-emerald-200 transition-colors`}>
             Dashboard{" "}
             <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
               -&gt;
             </span>
           </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
+          <p className={`m-0 max-w-[30ch] text-sm text-emerald-100/70 group-hover:text-emerald-50`}>
             Control alerts and test events.
           </p>
         </Link>

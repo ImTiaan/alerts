@@ -3,31 +3,64 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
+  /* Bottle Green Scale */
+  --color-bottle-100: #001a00;
+  --color-bottle-200: #002400;
+  --color-bottle-300: #003b00;
+  --color-bottle-400: #004d00;
+  --color-bottle-500: #006600;
+  --color-bottle-600: #008000;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+  /* Glass Effects */
+  --glass-surface: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-highlight: rgba(255, 255, 255, 0.2);
+
+  /* Backgrounds */
+  --bg-base: #050a08;
+  --bg-gradient-end: #0f2e26;
+
+  /* Text */
+  --text-foreground: #f0fdf4;
+  --text-glow: rgba(74, 222, 128, 0.3);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--text-foreground);
+  background: radial-gradient(circle at center, var(--bg-gradient-end), var(--bg-base));
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: var(--font-geist-sans), sans-serif;
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
+  .font-heading {
+    font-family: var(--font-block-script), sans-serif;
+  }
+
+  .glass-panel {
+    background: var(--glass-surface);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .glass-button {
+    background: var(--glass-surface);
+    border: 1px solid var(--glass-border);
+    color: var(--text-foreground);
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  .glass-button:hover {
+    background: var(--glass-highlight);
+    border-color: var(--glass-highlight);
+    box-shadow: 0 0 15px var(--text-glow);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px var(--text-glow);
   }
 }

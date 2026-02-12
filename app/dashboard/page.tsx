@@ -154,42 +154,42 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="min-h-screen p-8 bg-gray-100 dark:bg-zinc-900 text-gray-900 dark:text-gray-100">
+    <main className="min-h-screen p-8 text-white">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8">Alert Dashboard</h1>
+        <h1 className="text-4xl font-heading mb-8 text-glow text-center md:text-left">Alert Dashboard</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Test Controls</h2>
+          <div className="glass-panel p-6">
+            <h2 className="text-2xl font-heading mb-6 text-emerald-400">Test Controls</h2>
             
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium mb-1">Username</label>
+                <label className="block text-sm font-medium mb-1 text-emerald-100/70">Username</label>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600"
+                  className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-1">Message</label>
+                <label className="block text-sm font-medium mb-1 text-emerald-100/70">Message</label>
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600"
+                  className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Amount / Viewers</label>
+                <label className="block text-sm font-medium mb-1 text-emerald-100/70">Amount / Viewers</label>
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
-                  className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600"
+                  className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all"
                 />
               </div>
             </div>
@@ -197,70 +197,70 @@ export default function Dashboard() {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => triggerAlert("follow")}
-                className="bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium transition-colors"
+                className="glass-button bg-emerald-900/20 hover:bg-emerald-800/40 text-emerald-100 py-3 rounded-lg font-medium border-emerald-500/20"
               >
                 Test Follow
               </button>
               <button
                 onClick={() => triggerAlert("subscription")}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white py-3 rounded-lg font-medium transition-colors"
+                className="glass-button bg-emerald-900/20 hover:bg-emerald-800/40 text-emerald-100 py-3 rounded-lg font-medium border-emerald-500/20"
               >
                 Test Sub
               </button>
               <button
                 onClick={() => triggerAlert("donation")}
-                className="bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-medium transition-colors"
+                className="glass-button bg-emerald-900/20 hover:bg-emerald-800/40 text-emerald-100 py-3 rounded-lg font-medium border-emerald-500/20"
               >
                 Test Donation
               </button>
               <button
                 onClick={() => triggerAlert("raid")}
-                className="bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg font-medium transition-colors"
+                className="glass-button bg-emerald-900/20 hover:bg-emerald-800/40 text-emerald-100 py-3 rounded-lg font-medium border-emerald-500/20"
               >
                 Test Raid
               </button>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-zinc-800 p-6 rounded-xl shadow-sm">
-            <h2 className="text-xl font-semibold mb-4">Overlay Configuration</h2>
-            <p className="text-sm text-gray-500 mb-4">
+          <div className="glass-panel p-6">
+            <h2 className="text-2xl font-heading mb-6 text-emerald-400">Overlay Configuration</h2>
+            <p className="text-sm text-emerald-100/60 mb-6">
               Enter your details to generate a unique Overlay URL for OBS.
             </p>
 
             <div className="space-y-4 mb-6">
               <div>
-                <label className="block text-sm font-medium mb-1">Kick Username</label>
+                <label className="block text-sm font-medium mb-1 text-emerald-100/70">Kick Username</label>
                 <input
                   type="text"
                   placeholder="e.g. Trainwreckstv"
                   value={kickUser}
                   onChange={(e) => setKickUser(e.target.value)}
-                  className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600"
+                  className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder:text-emerald-900/50"
                 />
               </div>
 
-              <div className="border-t pt-4 dark:border-zinc-700">
-                <h3 className="text-sm font-semibold mb-2">Twitch (Optional)</h3>
-                <div className="space-y-2">
+              <div className="border-t border-emerald-900/30 pt-4">
+                <h3 className="text-sm font-semibold mb-3 text-emerald-300">Twitch (Optional)</h3>
+                <div className="space-y-3">
                    <div className="flex gap-2">
                     <input
                       type="text"
                       placeholder="Access Token (from scopes)"
                       value={twitchToken}
                       onChange={(e) => setTwitchToken(e.target.value)}
-                      className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
+                      className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder:text-emerald-900/50 text-sm"
                     />
                     <button 
                       onClick={() => {navigator.clipboard.writeText(twitchToken); alert("Copied token!");}}
-                      className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm font-medium transition-colors"
+                      className="glass-button px-3 py-2 bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-100 rounded text-sm font-medium border-emerald-500/20"
                       title="Copy Token"
                     >
                       Copy
                     </button>
                     <button 
                       onClick={handleTwitchLogin}
-                      className="whitespace-nowrap px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm font-medium transition-colors"
+                      className="glass-button whitespace-nowrap px-3 py-2 bg-emerald-600/20 hover:bg-emerald-500/30 text-emerald-100 rounded text-sm font-medium border-emerald-500/40"
                       title="Connect with Twitch to get token"
                     >
                       Connect
@@ -271,7 +271,7 @@ export default function Dashboard() {
                     placeholder="Client ID"
                     value={twitchClientId}
                     onChange={(e) => setTwitchClientId(e.target.value)}
-                    className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
+                    className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder:text-emerald-900/50 text-sm"
                   />
                    <div className="flex gap-2">
                      <input
@@ -279,11 +279,11 @@ export default function Dashboard() {
                       placeholder="Broadcaster ID"
                       value={twitchBroadcasterId}
                       onChange={(e) => setTwitchBroadcasterId(e.target.value)}
-                      className="w-full px-3 py-2 border rounded dark:bg-zinc-700 dark:border-zinc-600 text-sm"
+                      className="w-full px-3 py-2 border border-emerald-900/50 rounded bg-black/20 text-emerald-50 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/50 transition-all placeholder:text-emerald-900/50 text-sm"
                     />
                     <button 
                       onClick={() => {navigator.clipboard.writeText(twitchBroadcasterId); alert("Copied ID!");}}
-                      className="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded text-sm font-medium transition-colors"
+                      className="glass-button px-3 py-2 bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-100 rounded text-sm font-medium border-emerald-500/20"
                       title="Copy ID"
                     >
                       Copy
@@ -294,15 +294,15 @@ export default function Dashboard() {
 
               <button
                 onClick={generateUrl}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors"
+                className="w-full mt-4 glass-button bg-emerald-600/30 hover:bg-emerald-500/40 text-white py-3 rounded-lg font-heading text-lg tracking-wide border-emerald-500/30 transition-all hover:scale-[1.02]"
               >
-                Generate URL
+                GENERATE URL
               </button>
 
               {generatedUrl && (
-                <div className="mt-4 p-3 bg-zinc-100 dark:bg-zinc-900 rounded border border-zinc-200 dark:border-zinc-700 break-all">
-                  <p className="text-xs text-gray-500 mb-1">Copy this into OBS Browser Source:</p>
-                  <code className="text-sm text-blue-600 dark:text-blue-400 block">
+                <div className="mt-4 p-4 rounded-lg bg-black/30 border border-emerald-900/50 break-all">
+                  <p className="text-xs text-emerald-400/70 mb-2 uppercase tracking-wider">Copy this into OBS Browser Source:</p>
+                  <code className="text-sm text-emerald-300 block font-mono bg-black/20 p-2 rounded border border-emerald-900/30">
                     {generatedUrl}
                   </code>
                 </div>

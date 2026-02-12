@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
+import { Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+// Using Bebas Neue as a fallback/proxy for "Block Script" display font
+const blockScript = Bebas_Neue({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-block-script",
+});
 
 export const metadata: Metadata = {
   title: "Stream Alerts",
@@ -16,7 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${GeistSans.variable} ${GeistMono.variable} ${blockScript.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }
