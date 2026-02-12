@@ -103,6 +103,7 @@ export default function AlertDisplay({
   const processedAlertIdRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // Separate effect for setting the alert
     if (!currentAlert && queue.length > 0) {
       const nextAlert = queue[0];
       
@@ -113,15 +114,20 @@ export default function AlertDisplay({
 
       setCurrentAlert(nextAlert);
       processedAlertIdRef.current = nextAlert.id;
+    }
+  }, [currentAlert, queue]);
 
-      const duration = nextAlert.duration || 3000;
+  useEffect(() => {
+    // Separate effect for clearing the alert to prevent race conditions with queue updates
+    if (currentAlert) {
+      const duration = currentAlert.duration || 3000;
       const timer = setTimeout(() => {
         setCurrentAlert(null);
       }, duration);
 
       return () => clearTimeout(timer);
     }
-  }, [currentAlert, queue]);
+  }, [currentAlert]);
 
   return (
     <div className="fixed inset-0 flex items-start justify-center pointer-events-none p-12 pt-24">
