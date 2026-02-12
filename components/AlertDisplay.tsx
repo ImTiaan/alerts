@@ -124,7 +124,7 @@ export default function AlertDisplay({
   }, [currentAlert, queue]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center pointer-events-none p-12">
+    <div className="fixed inset-0 flex items-start justify-center pointer-events-none p-12 pt-24">
       <AnimatePresence 
         mode="wait"
         onExitComplete={() => {
